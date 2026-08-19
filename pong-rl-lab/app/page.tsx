@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import AgentCard from "@/components/AgentCard";
 import LearningCurve from "@/components/LearningCurve";
 import TrainingLab from "@/components/TrainingLab";
@@ -7,30 +10,30 @@ import EnvironmentGallery from "@/components/EnvironmentGallery";
 
 const agents = [
   {
-    name: "Early Learner",
-    model: "Small model",
-    training: "10K episodes",
-    description: "High exploration noise, delayed reactions, and limited trajectory prediction. Misses are common.",
+    name: "Aprendiz inicial",
+    model: "Modelo pequeño",
+    training: "10 mil episodios",
+    description: "Alta exploración, reacciones tardías y predicción limitada de la trayectoria.",
     skill: 0.28,
     seed: 1042,
     accent: "rose" as const,
     rank: 1,
   },
   {
-    name: "Developing Policy",
-    model: "Medium model",
-    training: "100K episodes",
-    description: "More stable positioning and stronger ball prediction, but still makes occasional timing errors.",
+    name: "Política en desarrollo",
+    model: "Modelo mediano",
+    training: "100 mil episodios",
+    description: "Posicionamiento más estable y mejor predicción, con errores ocasionales de sincronización.",
     skill: 0.61,
     seed: 2307,
     accent: "amber" as const,
     rank: 2,
   },
   {
-    name: "Mature Agent",
-    model: "Large model",
-    training: "1M episodes",
-    description: "Fast reactions, low prediction noise, and efficient positioning produce longer, more consistent rallies.",
+    name: "Agente maduro",
+    model: "Modelo grande",
+    training: "1 millón de episodios",
+    description: "Reacciones rápidas y posicionamiento eficiente para intercambios más largos y consistentes.",
     skill: 0.92,
     seed: 7109,
     accent: "orange" as const,
@@ -39,6 +42,12 @@ const agents = [
 ];
 
 export default function Home() {
+  const [comparisonGame, setComparisonGame] = useState<"pong" | "breakout">("pong");
+  const breakoutDescriptions = [
+    "Pierde el seguimiento de la pelota y deja escapar rebotes sencillos.",
+    "Mantiene la pelota en juego y empieza a identificar buenos ángulos.",
+    "Anticipa rebotes y limpia filas de bloques con mayor consistencia.",
+  ];
   return (
     <main className="grid-noise min-h-screen">
       <header className="sticky top-0 z-20 border-b border-orange-200/10 bg-[#090a0f]/85 shadow-[0_8px_30px_rgba(0,0,0,.18)] backdrop-blur-xl">
@@ -88,13 +97,18 @@ export default function Home() {
           <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">Policy comparison</div>
-              <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Same game. Different training maturity.</h2>
+              <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Mismo juego. Modelos de distinto tamaño.</h2>
             </div>
-            <p className="max-w-xl text-xs leading-5 text-[#a48d7d]">The right paddle is the learning agent. Track the live rallies, then compare reaction time, prediction confidence, and exploration below each simulation.</p>
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 p-1" role="tablist" aria-label="Juego de la comparativa">
+              <button type="button" role="tab" aria-selected={comparisonGame === "pong"} onClick={() => setComparisonGame("pong")} className={`rounded-lg px-3 py-2 text-xs font-bold transition ${comparisonGame === "pong" ? "bg-orange-400 text-white shadow-[0_5px_16px_rgba(255,107,0,.25)]" : "text-[#d9c7b9] hover:text-white"}`}>Pong</button>
+              <button type="button" role="tab" aria-selected={comparisonGame === "breakout"} onClick={() => setComparisonGame("breakout")} className={`rounded-lg px-3 py-2 text-xs font-bold transition ${comparisonGame === "breakout" ? "bg-orange-400 text-white shadow-[0_5px_16px_rgba(255,107,0,.25)]" : "text-[#d9c7b9] hover:text-white"}`}>Breakout</button>
+            </div>
           </div>
 
+          <p className="mb-5 max-w-3xl text-xs leading-5 text-[#d9c7b9]">{comparisonGame === "pong" ? "La pala derecha es el agente. Observa sus intercambios y compara tiempo de reacción, predicción y exploración." : "El agente controla la pala inferior. Observa cómo el tamaño del modelo influye en el seguimiento de la pelota, los rebotes y la limpieza de bloques."}</p>
+
           <div className="grid gap-4 lg:grid-cols-3">
-            {agents.map((agent) => <AgentCard key={agent.name} {...agent} />)}
+            {agents.map((agent, index) => <AgentCard key={agent.name} {...agent} game={comparisonGame} description={comparisonGame === "breakout" ? breakoutDescriptions[index] : agent.description} />)}
           </div>
 
           <div className="mt-4">
