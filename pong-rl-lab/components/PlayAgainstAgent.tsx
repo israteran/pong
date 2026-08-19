@@ -52,7 +52,7 @@ export default function PlayAgainstAgent() {
   });
 
   return (
-    <section id="play" className="mt-20 scroll-mt-24 rounded-2xl border border-orange-300/15 bg-[#1b120d]/90 p-5 md:p-6">
+    <section id="play" className="glow-panel mt-20 scroll-mt-24 rounded-2xl border border-orange-300/35 bg-[#15131b]/95 p-5 md:p-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200">Challenge mode</div>
@@ -67,7 +67,7 @@ export default function PlayAgainstAgent() {
       </div>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-2">
-          <button type="button" onClick={() => setRunning((value) => !value)} className="rounded-xl bg-orange-200 px-4 py-2 text-xs font-bold text-[#25130a] transition hover:brightness-110">{running ? "Pause game" : "Start game"}</button>
+          <button type="button" onClick={() => setRunning((value) => !value)} className="rounded-xl bg-orange-400 px-4 py-2 text-xs font-bold text-white shadow-[0_8px_20px_rgba(255,107,0,.22)] transition hover:bg-orange-300">{running ? "Pause game" : "Start game"}</button>
           <button type="button" onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#fff0e6] transition hover:bg-white/[0.05]">Reset score</button>
         </div>
         <div className="text-xs text-[#c4b4a5]">Agent <span className="font-semibold text-orange-200">{metrics.agentScore}</span> · You <span className="font-semibold text-orange-100">{metrics.opponentScore}</span></div>

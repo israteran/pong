@@ -41,20 +41,20 @@ const agents = [
 export default function Home() {
   return (
     <main className="grid-noise min-h-screen">
-      <header className="sticky top-0 z-20 border-b border-white/8 bg-[#100c08]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-20 border-b border-orange-200/10 bg-[#090a0f]/85 shadow-[0_8px_30px_rgba(0,0,0,.18)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1500px] items-center justify-between px-5 py-4 lg:px-8">
           <a href="#top" className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl border border-orange-300/20 bg-orange-400/10 text-sm font-black text-orange-300">RL</div>
+            <div className="grid h-9 w-9 place-items-center rounded-xl border border-orange-300/45 bg-orange-400/20 text-sm font-black text-orange-200 shadow-[0_0_24px_rgba(255,107,0,.18)]">RL</div>
             <div>
               <div className="text-sm font-bold tracking-tight">Pong RL Lab</div>
-              <div className="text-[10px] text-[#8e786a]">Reinforcement Learning Playground</div>
+              <div className="text-[10px] text-[#b9a293]">Reinforcement Learning Playground</div>
             </div>
           </a>
           <nav className="flex items-center gap-2 text-xs">
             <a href="#compare" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white sm:block">Compare</a>
             <a href="#rl-basics" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white md:block">What is RL?</a>
             <a href="#environments" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white lg:block">Games</a>
-            <a href="#training" className="rounded-lg border border-orange-300/20 bg-orange-400/10 px-3 py-2 font-semibold text-orange-200">Training Lab</a>
+            <a href="#training" className="rounded-lg border border-orange-300/45 bg-orange-400/20 px-3 py-2 font-semibold text-orange-100 shadow-[0_0_18px_rgba(255,107,0,.12)]">Training Lab</a>
           </nav>
         </div>
       </header>
@@ -62,8 +62,8 @@ export default function Home() {
       <div id="top" className="mx-auto max-w-[1500px] px-5 pb-16 pt-14 lg:px-8 lg:pt-20">
         <section className="grid items-end gap-8 lg:grid-cols-[1.2fr_.8fr]">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-orange-300/15 bg-orange-400/7 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-orange-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-orange-300" /> Browser-based RL visualization
+            <div className="inline-flex items-center gap-2 rounded-full border border-orange-300/35 bg-orange-400/12 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.17em] text-orange-100 shadow-[0_0_22px_rgba(255,107,0,.1)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-orange-300 shadow-[0_0_9px_rgba(255,154,61,.9)]" /> Browser-based RL visualization
             </div>
             <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-[-0.045em] text-[#fff7ed] sm:text-5xl lg:text-7xl">
               Visualize learning<br/><span className="text-orange-300">one rally at a time.</span>
@@ -76,7 +76,7 @@ export default function Home() {
               ["10×", "max sim speed"],
               ["100%", "browser based"],
             ].map(([value, label]) => (
-              <div key={label} className="rounded-2xl border border-white/8 bg-[#1b120d]/70 p-4">
+              <div key={label} className="glow-panel rounded-2xl border border-white/10 bg-[#15131b]/85 p-4">
                 <div className="metric-value text-xl font-semibold text-[#fff7ed] sm:text-2xl">{value}</div>
                 <div className="mt-1 text-[10px] leading-4 text-[#8e786a]">{label}</div>
               </div>
@@ -109,7 +109,7 @@ export default function Home() {
 
         <EnvironmentGallery />
 
-        <section className="mt-20 rounded-2xl border border-white/10 bg-[#1b120d]/75 p-6 md:p-8">
+        <section className="glow-panel mt-20 rounded-2xl border border-white/12 bg-[#15131b]/95 p-6 md:p-8">
           <div className="grid gap-8 lg:grid-cols-3">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">How this MVP works</div>

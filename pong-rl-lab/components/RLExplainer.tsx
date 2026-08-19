@@ -25,7 +25,7 @@ export default function RLExplainer() {
   const topic = topics[active];
 
   return (
-    <section id="rl-basics" className="mt-20 scroll-mt-24 rounded-2xl border border-orange-300/15 bg-[#1b120d]/80 p-6 md:p-8">
+    <section id="rl-basics" className="glow-panel mt-20 scroll-mt-24 rounded-2xl border border-orange-300/35 bg-[#15131b]/95 p-6 md:p-8">
       <div className="grid gap-7 lg:grid-cols-[.75fr_1.25fr]">
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">RL in one minute</div>

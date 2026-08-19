@@ -14,7 +14,7 @@ export default function LearningCurve() {
   }).join(" ");
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#1b120d]/90 p-5">
+    <div className="glow-panel rounded-2xl border border-white/12 bg-[#15131b]/95 p-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">Expected learning curve</div>

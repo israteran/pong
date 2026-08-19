@@ -1,14 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  --color-orange-100: #fff0e2;
+  --color-orange-200: #ffd1a8;
+  --color-orange-300: #ff9a3d;
+  --color-orange-400: #ff6b00;
+  --color-orange-500: #f04400;
+  --color-orange-950: #351000;
+}
+
 :root {
-  --bg: #100c08;
-  --panel: #1b120d;
-  --panel-2: #261911;
-  --line: rgba(148, 163, 184, 0.14);
-  --text: #fff7ed;
-  --muted: #c4b4a5;
-  --accent: #ff7a18;
-  --accent-2: #f04f00;
+  --bg: #090a0f;
+  --panel: #15131b;
+  --panel-2: #211822;
+  --line: rgba(255, 214, 177, 0.16);
+  --text: #fffaf5;
+  --muted: #d9c7b9;
+  --accent: #ff6b00;
+  --accent-2: #ff3d00;
   --amber: #fbbf24;
   --red: #fb7185;
 }
@@ -19,23 +28,28 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 15% -10%, rgba(255, 91, 0, 0.25), transparent 30%),
-    radial-gradient(circle at 85% 0%, rgba(255, 153, 51, 0.12), transparent 26%),
+    radial-gradient(ellipse 55% 34% at 12% -8%, rgba(255, 84, 0, 0.36), transparent 68%),
+    radial-gradient(ellipse 38% 25% at 92% 2%, rgba(255, 145, 34, 0.18), transparent 72%),
+    radial-gradient(ellipse 38% 30% at 50% 105%, rgba(92, 37, 14, 0.22), transparent 72%),
     var(--bg);
   color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 button { font: inherit; }
-a:focus-visible, button:focus-visible { outline: 2px solid #fb923c; outline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 2px solid #ff9a3d; outline-offset: 3px; }
 
 ::selection { background: rgba(255, 122, 24, .32); color: #fff7ed; }
 
 .grid-noise {
   background-image:
-    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
   background-size: 28px 28px;
+}
+
+.glow-panel {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045), 0 20px 50px rgba(0, 0, 0, .18);
 }
 
 .metric-value {
@@ -43,14 +57,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid #fb923c; outline-offs
 }
 
 .pulse-dot {
-  box-shadow: 0 0 0 0 rgba(251, 146, 60, 0.5);
+  box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.5);
   animation: pulseDot 2s infinite;
 }
 
 @keyframes pulseDot {
-  0% { box-shadow: 0 0 0 0 rgba(251, 146, 60, .45); }
-  70% { box-shadow: 0 0 0 7px rgba(251, 146, 60, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(251, 146, 60, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 107, 0, .52); }
+  70% { box-shadow: 0 0 0 7px rgba(255, 107, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

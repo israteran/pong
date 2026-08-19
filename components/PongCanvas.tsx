@@ -73,7 +73,7 @@ export default function PongCanvas({
 
       ctx.setTransform((displayW / 600) * dpr, 0, 0, (displayH / 340) * dpr, 0, 0);
       ctx.clearRect(0, 0, 600, 340);
-      ctx.fillStyle = "#100c08";
+      ctx.fillStyle = "#090a0f";
       ctx.fillRect(0, 0, 600, 340);
 
       ctx.strokeStyle = "rgba(196, 180, 165, 0.2)";

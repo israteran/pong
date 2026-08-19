@@ -37,7 +37,7 @@ export default function AgentCard({ name, training, model, description, skill, s
   const featured = skill > 0.8;
 
   return (
-    <article className={`group relative overflow-hidden rounded-2xl border bg-[#1b120d]/90 shadow-2xl shadow-black/15 transition duration-300 hover:-translate-y-1 ${featured ? "border-orange-400/45 shadow-orange-950/30" : "border-white/10 hover:border-orange-300/35"}`}>
+    <article className={`glow-panel group relative overflow-hidden rounded-2xl border bg-[#15131b]/95 shadow-2xl shadow-black/25 transition duration-300 hover:-translate-y-1 ${featured ? "border-orange-400/65 shadow-orange-950/40" : "border-white/12 hover:border-orange-300/55"}`}>
       {featured ? <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-orange-300 to-transparent" /> : null}
       <div className="flex items-start justify-between gap-3 p-5 pb-4">
         <div>
@@ -55,7 +55,7 @@ export default function AgentCard({ name, training, model, description, skill, s
           </div>
         </div>
       </div>
-      <div className="border-y border-white/8 bg-black/15 p-2 transition group-hover:bg-orange-400/[0.035]">
+      <div className="border-y border-white/10 bg-black/25 p-2 transition group-hover:bg-orange-400/[0.07]">
         <PongCanvas skill={skill} seed={seed} onMetrics={setMetrics} />
       </div>
       <div className="border-b border-white/8 px-4 py-3">

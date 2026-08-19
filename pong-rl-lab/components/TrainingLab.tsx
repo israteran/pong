@@ -38,7 +38,7 @@ export default function TrainingLab() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.55fr_.85fr]">
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#1b120d]/90">
+        <div className="glow-panel overflow-hidden rounded-2xl border border-white/12 bg-[#15131b]/95">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 p-4">
             <div className="flex items-center gap-3">
               <div className={`h-2.5 w-2.5 rounded-full ${running ? "pulse-dot bg-orange-300" : "bg-[#786358]"}`} />
@@ -57,13 +57,13 @@ export default function TrainingLab() {
             <PongCanvas skill={0.12} learning running={running} speed={speed} resetToken={resetToken} seed={8851} onMetrics={setMetrics} />
           </div>
           <div className="flex flex-wrap gap-2 border-t border-white/8 p-4">
-            <button onClick={() => setRunning((v) => !v)} className="rounded-xl bg-orange-300 px-4 py-2 text-xs font-bold text-[#25130a] transition hover:brightness-110">{running ? "Pause training" : metrics.episode > 1 ? "Resume training" : "Start DQN"}</button>
+            <button onClick={() => setRunning((v) => !v)} className="rounded-xl bg-orange-400 px-4 py-2 text-xs font-bold text-white shadow-[0_8px_20px_rgba(255,107,0,.22)] transition hover:bg-orange-300 hover:shadow-[0_10px_26px_rgba(255,107,0,.32)]">{running ? "Pause training" : metrics.episode > 1 ? "Resume training" : "Start DQN"}</button>
             <button onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#f0d9c5] transition hover:bg-white/[0.05]">Reset agent</button>
             <div className="ml-auto flex items-center text-[11px] text-[#c4b4a5]">simulation speed <span className="ml-1 font-semibold text-[#fff0e6]">{speed}×</span></div>
           </div>
         </div>
 
-        <aside className="rounded-2xl border border-white/10 bg-[#1b120d]/90 p-5">
+        <aside className="glow-panel rounded-2xl border border-white/12 bg-[#15131b]/95 p-5">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#c4b4a5]">DQN telemetry</div>
