@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import PongCanvas from "./PongCanvas";
 import Metric from "./Metric";
 import type { PongMetrics } from "@/lib/pong-engine";
 
 const initial: PongMetrics = {
   agentScore: 0, opponentScore: 0, rally: 0, longestRally: 0, episode: 1,
-  cumulativeReward: 0, averageReward: 0, wins: 0, losses: 0, winRate: 0, skill: 0.12,
+  cumulativeReward: 0, averageReward: 0, wins: 0, losses: 0, winRate: 0, skill: 0.12, epsilon: 0.9, dqnLoss: 0, replaySize: 0, dqnUpdates: 0,
 };
 
 export default function TrainingLab() {
@@ -16,8 +16,9 @@ export default function TrainingLab() {
   const [resetToken, setResetToken] = useState(0);
   const [metrics, setMetrics] = useState(initial);
 
-  const progress = useMemo(() => Math.min(100, ((metrics.skill - 0.1) / 0.865) * 100), [metrics.skill]);
-  const status = progress < 25 ? "Exploring" : progress < 65 ? "Learning" : progress < 90 ? "Converging" : "Mature policy";
+  const replaySize = metrics.replaySize ?? 0;
+  const progress = Math.min(100, (replaySize / 6000) * 100);
+  const status = replaySize < 180 ? "Collecting experience" : (metrics.dqnUpdates ?? 0) < 50 ? "Training Q-network" : "DQN training in progress";
 
   const reset = () => {
     setRunning(false);
@@ -29,26 +30,26 @@ export default function TrainingLab() {
     <section id="training" className="scroll-mt-24">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-300">Laboratorio interactivo</div>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Train a policy in real time</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#8da79a]">Watch an intentionally weak agent improve as training episodes accumulate. Increase simulation speed to compress the learning process.</p>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">Interactive training lab</div>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Train a DQN in real time</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#c4b4a5]">The agent learns a Q-function with a small neural network, replay memory, and a target network. Increase the speed to collect more transitions.</p>
         </div>
-        <div className="rounded-full border border-amber-300/15 bg-amber-400/8 px-3 py-1.5 text-[11px] font-medium text-amber-200">Educational simulation · no external ML backend</div>
+        <div className="rounded-full border border-orange-300/15 bg-orange-400/8 px-3 py-1.5 text-[11px] font-medium text-orange-100">Local DQN · no backend or API</div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.55fr_.85fr]">
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141126]/90">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#1b120d]/90">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 p-4">
             <div className="flex items-center gap-3">
-              <div className={`h-2.5 w-2.5 rounded-full ${running ? "pulse-dot bg-cyan-300" : "bg-[#625d78]"}`} />
+              <div className={`h-2.5 w-2.5 rounded-full ${running ? "pulse-dot bg-orange-300" : "bg-[#786358]"}`} />
               <div>
                 <div className="text-sm font-semibold">Training environment</div>
-                <div className="text-[11px] text-[#789285]">Agent is the right paddle · opponent uses a fixed policy</div>
+                <div className="text-[11px] text-[#c4b4a5]">The DQN controls the right paddle; the left paddle uses a fixed policy.</div>
               </div>
             </div>
             <div className="flex gap-1.5">
               {[1, 5, 10].map((v) => (
-                <button key={v} onClick={() => setSpeed(v as 1 | 5 | 10)} className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${speed === v ? "border-violet-300/30 bg-violet-400/12 text-violet-200" : "border-white/8 bg-white/[0.025] text-[#aaa4c2] hover:bg-white/[0.05]"}`}>{v}×</button>
+                <button key={v} aria-label={`Set simulation speed to ${v} times`} onClick={() => setSpeed(v as 1 | 5 | 10)} className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${speed === v ? "border-orange-300/30 bg-orange-400/12 text-orange-200" : "border-white/8 bg-white/[0.025] text-[#c4b4a5] hover:bg-white/[0.05]"}`}>{v}×</button>
               ))}
             </div>
           </div>
@@ -56,36 +57,37 @@ export default function TrainingLab() {
             <PongCanvas skill={0.12} learning running={running} speed={speed} resetToken={resetToken} seed={8851} onMetrics={setMetrics} />
           </div>
           <div className="flex flex-wrap gap-2 border-t border-white/8 p-4">
-            <button onClick={() => setRunning((v) => !v)} className="rounded-xl bg-violet-300 px-4 py-2 text-xs font-bold text-[#171126] transition hover:brightness-110">{running ? "Pause training" : metrics.episode > 1 ? "Resume training" : "Start training"}</button>
-            <button onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#c6d9cf] transition hover:bg-white/[0.05]">Reset agent</button>
-            <div className="ml-auto flex items-center text-[11px] text-[#60796d]">simulation speed <span className="ml-1 font-semibold text-[#8da79a]">{speed}×</span></div>
+            <button onClick={() => setRunning((v) => !v)} className="rounded-xl bg-orange-300 px-4 py-2 text-xs font-bold text-[#25130a] transition hover:brightness-110">{running ? "Pause training" : metrics.episode > 1 ? "Resume training" : "Start DQN"}</button>
+            <button onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#f0d9c5] transition hover:bg-white/[0.05]">Reset agent</button>
+            <div className="ml-auto flex items-center text-[11px] text-[#c4b4a5]">simulation speed <span className="ml-1 font-semibold text-[#fff0e6]">{speed}×</span></div>
           </div>
         </div>
 
-        <aside className="rounded-2xl border border-white/10 bg-[#141126]/90 p-5">
+        <aside className="rounded-2xl border border-white/10 bg-[#1b120d]/90 p-5">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#789285]">Policy telemetry</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#c4b4a5]">DQN telemetry</div>
               <div className="mt-1 text-lg font-semibold">{status}</div>
             </div>
-            <div className="metric-value text-3xl font-semibold text-violet-300">{Math.round(progress)}%</div>
+            <div className="metric-value text-3xl font-semibold text-orange-300">{replaySize.toLocaleString()}</div>
           </div>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-violet-300 transition-[width] duration-300" style={{ width: `${progress}%` }} /></div>
+          <div className="mt-1 text-[10px] text-[#c4b4a5]">replay-buffer experiences</div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-orange-300 transition-[width] duration-300" style={{ width: `${progress}%` }} /></div>
 
           <div className="mt-5 grid grid-cols-2 gap-2">
             <Metric label="Episode" value={metrics.episode.toLocaleString()} />
-            <Metric label="Policy quality" value={`${(metrics.skill * 100).toFixed(0)}%`} />
-            <Metric label="Cumulative reward" value={metrics.cumulativeReward.toFixed(0)} />
+            <Metric label="Epsilon" value={(metrics.epsilon ?? 0).toFixed(3)} hint="exploration" />
+            <Metric label="TD loss" value={(metrics.dqnLoss ?? 0).toFixed(3)} hint="Huber loss" />
+            <Metric label="Updates" value={metrics.dqnUpdates ?? 0} hint="gradient steps" />
             <Metric label="Average reward" value={metrics.averageReward.toFixed(1)} />
             <Metric label="Current rally" value={metrics.rally} />
-            <Metric label="Longest rally" value={metrics.longestRally} />
             <Metric label="Wins / losses" value={`${metrics.wins} / ${metrics.losses}`} />
             <Metric label="Win rate" value={`${metrics.winRate.toFixed(1)}%`} />
           </div>
 
           <div className="mt-5 rounded-xl border border-white/8 bg-black/10 p-4">
-            <div className="text-xs font-semibold text-[#c6d9cf]">What is changing?</div>
-            <p className="mt-2 text-[11px] leading-5 text-[#789285]">The agent begins with slow reactions, noisy targeting, and weak trajectory prediction. As episodes increase, its simulated policy reduces exploration error, reacts faster, and predicts ball intercepts more accurately.</p>
+            <div className="text-xs font-semibold text-[#fff0e6]">What is changing?</div>
+            <p className="mt-2 text-[11px] leading-5 text-[#c4b4a5]">Every transition stores state, action, reward, and next state. The agent trains on random buffer samples and periodically copies its network to a target network to stabilize Q-value estimates.</p>
           </div>
         </aside>
       </div>

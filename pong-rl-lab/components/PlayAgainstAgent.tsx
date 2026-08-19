@@ -52,14 +52,14 @@ export default function PlayAgainstAgent() {
   });
 
   return (
-    <section id="play" className="mt-20 scroll-mt-24 rounded-2xl border border-cyan-300/15 bg-[#141126]/90 p-5 md:p-6">
+    <section id="play" className="mt-20 scroll-mt-24 rounded-2xl border border-orange-300/15 bg-[#1b120d]/90 p-5 md:p-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-200">Modo duelo</div>
-          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Juega contra el agente</h2>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#aaa4c2]">Tú controlas la paleta izquierda; el agente usa la derecha. Usa <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">↑</kbd> <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">↓</kbd> o <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">W</kbd> <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">S</kbd>; en móvil usa los controles.</p>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-200">Challenge mode</div>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Play against the agent</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-[#c4b4a5]">You control the left paddle while the agent uses the right one. Use <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">↑</kbd> <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">↓</kbd> or <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">W</kbd> <kbd className="rounded border border-white/15 bg-white/5 px-1.5 py-0.5 text-[11px] text-white">S</kbd>; on mobile, use the controls below.</p>
         </div>
-        <div className="rounded-full border border-violet-300/15 bg-violet-400/10 px-3 py-1.5 text-[11px] font-medium text-violet-200">Agente intermedio · 62% de habilidad</div>
+        <div className="rounded-full border border-orange-300/15 bg-orange-400/10 px-3 py-1.5 text-[11px] font-medium text-orange-200">Intermediate agent · 62% skill</div>
       </div>
 
       <div className="mt-5 overflow-hidden rounded-xl border border-white/10 bg-black/15 p-2 sm:p-4">
@@ -67,14 +67,14 @@ export default function PlayAgainstAgent() {
       </div>
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-2">
-          <button type="button" onClick={() => setRunning((value) => !value)} className="rounded-xl bg-cyan-200 px-4 py-2 text-xs font-bold text-[#10202a] transition hover:brightness-110">{running ? "Pausar partida" : "Empezar partida"}</button>
-          <button type="button" onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#ddd8ee] transition hover:bg-white/[0.05]">Reiniciar marcador</button>
+          <button type="button" onClick={() => setRunning((value) => !value)} className="rounded-xl bg-orange-200 px-4 py-2 text-xs font-bold text-[#25130a] transition hover:brightness-110">{running ? "Pause game" : "Start game"}</button>
+          <button type="button" onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#fff0e6] transition hover:bg-white/[0.05]">Reset score</button>
         </div>
-        <div className="text-xs text-[#aaa4c2]">Agente <span className="font-semibold text-violet-200">{metrics.agentScore}</span> · Tú <span className="font-semibold text-cyan-200">{metrics.opponentScore}</span></div>
+        <div className="text-xs text-[#c4b4a5]">Agent <span className="font-semibold text-orange-200">{metrics.agentScore}</span> · You <span className="font-semibold text-orange-100">{metrics.opponentScore}</span></div>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2 sm:hidden">
-        <button type="button" {...control(-1)} className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 py-3 text-xs font-bold text-cyan-100">Mover arriba</button>
-        <button type="button" {...control(1)} className="rounded-xl border border-cyan-300/20 bg-cyan-300/10 py-3 text-xs font-bold text-cyan-100">Mover abajo</button>
+        <button type="button" aria-label="Move paddle up" {...control(-1)} className="rounded-xl border border-orange-300/20 bg-orange-300/10 py-3 text-xs font-bold text-orange-100">Move up</button>
+        <button type="button" aria-label="Move paddle down" {...control(1)} className="rounded-xl border border-orange-300/20 bg-orange-300/10 py-3 text-xs font-bold text-orange-100">Move down</button>
       </div>
     </section>
   );

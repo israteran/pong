@@ -3,12 +3,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Pong RL Lab",
-  description: "Visualización educativa de reinforcement learning a través de Pong.",
+  description: "An educational reinforcement learning visualization through Pong.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

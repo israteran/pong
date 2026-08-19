@@ -73,10 +73,10 @@ export default function PongCanvas({
 
       ctx.setTransform((displayW / 600) * dpr, 0, 0, (displayH / 340) * dpr, 0, 0);
       ctx.clearRect(0, 0, 600, 340);
-      ctx.fillStyle = "#0b0a18";
+      ctx.fillStyle = "#100c08";
       ctx.fillRect(0, 0, 600, 340);
 
-      ctx.strokeStyle = "rgba(170, 164, 194, 0.2)";
+      ctx.strokeStyle = "rgba(196, 180, 165, 0.2)";
       ctx.lineWidth = 1;
       for (let y = 10; y < 340; y += 18) {
         ctx.beginPath();
@@ -85,7 +85,7 @@ export default function PongCanvas({
         ctx.stroke();
       }
 
-      ctx.strokeStyle = "rgba(167, 139, 250, 0.1)";
+      ctx.strokeStyle = "rgba(251, 146, 60, 0.1)";
       for (let x = 0; x <= 600; x += 50) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 340); ctx.stroke();
       }
@@ -93,20 +93,20 @@ export default function PongCanvas({
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(600, y); ctx.stroke();
       }
 
-      ctx.fillStyle = "rgba(245, 242, 255, .88)";
+      ctx.fillStyle = "rgba(255, 247, 237, .88)";
       ctx.fillRect(22, engine.leftY, engine.paddleW, engine.paddleH);
 
-      ctx.shadowColor = "rgba(167, 139, 250, .65)";
+      ctx.shadowColor = "rgba(251, 146, 60, .65)";
       ctx.shadowBlur = 12;
-      ctx.fillStyle = "#a78bfa";
+      ctx.fillStyle = "#fb923c";
       ctx.fillRect(600 - 22 - engine.paddleW, engine.rightY, engine.paddleW, engine.paddleH);
       ctx.shadowBlur = 0;
 
-      ctx.shadowColor = "rgba(245, 242, 255, .7)";
+      ctx.shadowColor = "rgba(255, 247, 237, .7)";
       ctx.shadowBlur = 10;
       ctx.beginPath();
       ctx.arc(engine.ball.x, engine.ball.y, engine.ball.r, 0, Math.PI * 2);
-      ctx.fillStyle = "#f5f2ff";
+      ctx.fillStyle = "#fff7ed";
       ctx.fill();
       ctx.shadowBlur = 0;
     };

@@ -1,3 +1,5 @@
+import { DQNAgent } from "./dqn-agent";
+
 export type PongMetrics = {
   agentScore: number;
   opponentScore: number;
@@ -10,6 +12,10 @@ export type PongMetrics = {
   losses: number;
   winRate: number;
   skill: number;
+  epsilon?: number;
+  dqnLoss?: number;
+  replaySize?: number;
+  dqnUpdates?: number;
 };
 
 export type EngineOptions = {
@@ -54,6 +60,7 @@ export class PongEngine {
   private leftDecisionTimer = 0;
   private rightTarget: number;
   private leftTarget: number;
+  private dqn?: DQNAgent;
 
   constructor(options: EngineOptions = {}) {
     this.width = options.width ?? 600;
@@ -68,6 +75,7 @@ export class PongEngine {
     this.rightTarget = this.height / 2;
     this.leftTarget = this.height / 2;
     this.ball = { x: this.width / 2, y: this.height / 2, vx: 250, vy: 95, r: 6 };
+    if (this.learning) this.dqn = new DQNAgent((options.seed ?? 1234567) + 91);
     this.serve(this.random() > 0.5 ? 1 : -1);
   }
 
@@ -117,8 +125,6 @@ export class PongEngine {
     let y = ball.y + ball.vy * Math.max(0, t);
     const top = ball.r;
     const bottom = this.height - ball.r;
-    const span = bottom - top;
-
     while (y < top || y > bottom) {
       if (y < top) y = top + (top - y);
       if (y > bottom) y = bottom - (y - bottom);
@@ -130,7 +136,7 @@ export class PongEngine {
     return ball.y * (1 - predictionBlend) + y * predictionBlend + noise;
   }
 
-  private movePaddles(dt: number) {
+  private movePaddles(dt: number, dqnAction?: number) {
     const leftSkill = 0.74;
     this.leftDecisionTimer -= dt;
     this.rightDecisionTimer -= dt;
@@ -140,7 +146,7 @@ export class PongEngine {
       this.leftDecisionTimer = 0.045 + (1 - leftSkill) * 0.13;
     }
 
-    if (this.rightDecisionTimer <= 0) {
+    if (dqnAction === undefined && this.rightDecisionTimer <= 0) {
       this.rightTarget = this.predictedIntercept(this.skill, true);
       this.rightDecisionTimer = 0.035 + (1 - this.skill) * 0.22;
     }
@@ -155,7 +161,9 @@ export class PongEngine {
     this.leftY = this.humanLeft
       ? clamp(this.leftY + this.playerDirection * 390 * dt, 8, this.height - this.paddleH - 8)
       : move(this.leftY, this.leftTarget, 255 + leftSkill * 150);
-    this.rightY = move(this.rightY, this.rightTarget, 190 + this.skill * 300);
+    this.rightY = dqnAction === undefined
+      ? move(this.rightY, this.rightTarget, 190 + this.skill * 300)
+      : clamp(this.rightY + (dqnAction - 1) * 370 * dt, 8, this.height - this.paddleH - 8);
   }
 
   private onEpisodeEnd(agentWon: boolean) {
@@ -165,18 +173,25 @@ export class PongEngine {
     if (agentWon) this.wins += 1;
     else this.losses += 1;
     this.episode += 1;
+  }
 
-    if (this.learning) {
-      // Lightweight browser-only learning approximation: policy quality follows a
-      // saturating learning curve with tiny exploration jitter.
-      const learned = 0.12 + 0.84 * (1 - Math.exp(-(this.episode - 1) / 145));
-      const exploration = (this.random() - 0.5) * Math.max(0.015, 0.09 * Math.exp(-this.episode / 90));
-      this.skill = clamp(learned + exploration, 0.1, 0.965);
-    }
+  private getDqnState() {
+    return [
+      (this.ball.x / this.width) * 2 - 1,
+      (this.ball.y / this.height) * 2 - 1,
+      this.ball.vx / 530,
+      this.ball.vy / 410,
+      ((this.rightY + this.paddleH / 2) / this.height) * 2 - 1,
+      ((this.leftY + this.paddleH / 2) / this.height) * 2 - 1,
+    ];
   }
 
   step(dt: number) {
-    this.movePaddles(dt);
+    const state = this.dqn ? this.getDqnState() : undefined;
+    const action = state && this.dqn ? this.dqn.selectAction(state) : undefined;
+    this.movePaddles(dt, action);
+    let reward = 0;
+    let done = false;
 
     const ball = this.ball;
     ball.x += ball.vx * dt;
@@ -223,24 +238,39 @@ export class PongEngine {
       this.longestRally = Math.max(this.longestRally, this.rally);
       this.episodeReward += 1;
       this.cumulativeReward += 1;
+      reward += 1;
     }
 
     ball.vx = clamp(ball.vx, -530, 530);
     ball.vy = clamp(ball.vy, -410, 410);
 
+    // A small dense signal makes browser-scale learning practical while the
+    // decisive rewards still come from returning and winning points.
+    if (ball.vx > 0) {
+      const paddleCenter = this.rightY + this.paddleH / 2;
+      reward += 0.004 * (1 - Math.min(1, Math.abs(ball.y - paddleCenter) / this.height));
+    }
+
     if (ball.x < -30) {
+      reward += 10;
+      done = true;
       this.agentScore += 1;
       this.onEpisodeEnd(true);
       this.serve(1);
     } else if (ball.x > this.width + 30) {
+      reward -= 10;
+      done = true;
       this.opponentScore += 1;
       this.onEpisodeEnd(false);
       this.serve(-1);
     }
+
+    if (state && action !== undefined && this.dqn) this.dqn.observe({ state, action, reward, nextState: this.getDqnState(), done });
   }
 
   getMetrics(): PongMetrics {
     const games = this.wins + this.losses;
+    const dqn = this.dqn?.getStats();
     return {
       agentScore: this.agentScore,
       opponentScore: this.opponentScore,
@@ -253,6 +283,10 @@ export class PongEngine {
       losses: this.losses,
       winRate: games ? (this.wins / games) * 100 : 0,
       skill: this.skill,
+      epsilon: dqn?.epsilon,
+      dqnLoss: dqn?.loss,
+      replaySize: dqn?.replaySize,
+      dqnUpdates: dqn?.updates,
     };
   }
 }
