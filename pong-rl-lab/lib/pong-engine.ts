@@ -18,6 +18,7 @@ export type EngineOptions = {
   skill?: number;
   learning?: boolean;
   seed?: number;
+  humanLeft?: boolean;
 };
 
 type Ball = { x: number; y: number; vx: number; vy: number; r: number };
@@ -37,6 +38,8 @@ export class PongEngine {
   skill: number;
   baseSkill: number;
   learning: boolean;
+  humanLeft: boolean;
+  playerDirection = 0;
   rally = 0;
   longestRally = 0;
   episode = 1;
@@ -58,6 +61,7 @@ export class PongEngine {
     this.skill = options.skill ?? 0.45;
     this.baseSkill = this.skill;
     this.learning = options.learning ?? false;
+    this.humanLeft = options.humanLeft ?? false;
     this.randState = options.seed ?? 1234567;
     this.leftY = this.height / 2 - this.paddleH / 2;
     this.rightY = this.leftY;
@@ -99,6 +103,10 @@ export class PongEngine {
     this.serve(1);
   }
 
+  setPlayerDirection(direction: -1 | 0 | 1) {
+    this.playerDirection = direction;
+  }
+
   private predictedIntercept(skill: number, isRight: boolean) {
     const ball = this.ball;
     const movingToward = isRight ? ball.vx > 0 : ball.vx < 0;
@@ -127,7 +135,7 @@ export class PongEngine {
     this.leftDecisionTimer -= dt;
     this.rightDecisionTimer -= dt;
 
-    if (this.leftDecisionTimer <= 0) {
+    if (!this.humanLeft && this.leftDecisionTimer <= 0) {
       this.leftTarget = this.predictedIntercept(leftSkill, false);
       this.leftDecisionTimer = 0.045 + (1 - leftSkill) * 0.13;
     }
@@ -144,7 +152,9 @@ export class PongEngine {
       return clamp(current + clamp(delta, -maxStep, maxStep), 8, this.height - this.paddleH - 8);
     };
 
-    this.leftY = move(this.leftY, this.leftTarget, 255 + leftSkill * 150);
+    this.leftY = this.humanLeft
+      ? clamp(this.leftY + this.playerDirection * 390 * dt, 8, this.height - this.paddleH - 8)
+      : move(this.leftY, this.leftTarget, 255 + leftSkill * 150);
     this.rightY = move(this.rightY, this.rightTarget, 190 + this.skill * 300);
   }
 

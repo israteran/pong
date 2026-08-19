@@ -14,14 +14,14 @@ export default function LearningCurve() {
   }).join(" ");
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-[#0b1713]/90 p-5">
+    <div className="rounded-2xl border border-white/10 bg-[#141126]/90 p-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#76f7b2]">Expected learning curve</div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-300">Curva de aprendizaje esperada</div>
           <h3 className="mt-1 text-lg font-semibold">Policy quality improves with training</h3>
         </div>
         <div className="flex gap-4 text-xs text-[#8da79a]">
-          {series.map((item) => <span key={item.label} className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-[#76f7b2]" style={{ opacity: item.opacity }} />{item.label}</span>)}
+          {series.map((item) => <span key={item.label} className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-violet-300" style={{ opacity: item.opacity }} />{item.label}</span>)}
         </div>
       </div>
       <div className="mt-4 overflow-hidden rounded-xl border border-white/6 bg-black/10 p-2">
@@ -30,7 +30,7 @@ export default function LearningCurve() {
             const y = height - pad - (v / 100) * (height - pad * 2);
             return <g key={v}><line x1={pad} x2={width-pad} y1={y} y2={y} stroke="rgba(148,163,184,.10)"/><text x="4" y={y+4} fill="#60796d" fontSize="11">{v}</text></g>;
           })}
-          {series.map((item) => <path key={item.label} d={toPath(item.points)} fill="none" stroke="#76f7b2" strokeWidth="3" strokeLinecap="round" strokeDasharray={item.dash} opacity={item.opacity} />)}
+          {series.map((item) => <path key={item.label} d={toPath(item.points)} fill="none" stroke="#a78bfa" strokeWidth="3" strokeLinecap="round" strokeDasharray={item.dash} opacity={item.opacity} />)}
           <text x={width/2-38} y={height-4} fill="#60796d" fontSize="11">training episodes →</text>
           <text transform={`translate(11 ${height/2+32}) rotate(-90)`} fill="#60796d" fontSize="11">policy quality</text>
         </svg>

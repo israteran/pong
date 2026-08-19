@@ -29,7 +29,7 @@ export default function TrainingLab() {
     <section id="training" className="scroll-mt-24">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#76f7b2]">Interactive Training Lab</div>
+          <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-violet-300">Laboratorio interactivo</div>
           <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Train a policy in real time</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[#8da79a]">Watch an intentionally weak agent improve as training episodes accumulate. Increase simulation speed to compress the learning process.</p>
         </div>
@@ -37,10 +37,10 @@ export default function TrainingLab() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.55fr_.85fr]">
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0b1713]/90">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#141126]/90">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 p-4">
             <div className="flex items-center gap-3">
-              <div className={`h-2.5 w-2.5 rounded-full ${running ? "pulse-dot bg-[#76f7b2]" : "bg-[#53675d]"}`} />
+              <div className={`h-2.5 w-2.5 rounded-full ${running ? "pulse-dot bg-cyan-300" : "bg-[#625d78]"}`} />
               <div>
                 <div className="text-sm font-semibold">Training environment</div>
                 <div className="text-[11px] text-[#789285]">Agent is the right paddle · opponent uses a fixed policy</div>
@@ -48,7 +48,7 @@ export default function TrainingLab() {
             </div>
             <div className="flex gap-1.5">
               {[1, 5, 10].map((v) => (
-                <button key={v} onClick={() => setSpeed(v as 1 | 5 | 10)} className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${speed === v ? "border-emerald-300/30 bg-emerald-400/12 text-[#76f7b2]" : "border-white/8 bg-white/[0.025] text-[#8da79a] hover:bg-white/[0.05]"}`}>{v}×</button>
+                <button key={v} onClick={() => setSpeed(v as 1 | 5 | 10)} className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${speed === v ? "border-violet-300/30 bg-violet-400/12 text-violet-200" : "border-white/8 bg-white/[0.025] text-[#aaa4c2] hover:bg-white/[0.05]"}`}>{v}×</button>
               ))}
             </div>
           </div>
@@ -56,21 +56,21 @@ export default function TrainingLab() {
             <PongCanvas skill={0.12} learning running={running} speed={speed} resetToken={resetToken} seed={8851} onMetrics={setMetrics} />
           </div>
           <div className="flex flex-wrap gap-2 border-t border-white/8 p-4">
-            <button onClick={() => setRunning((v) => !v)} className="rounded-xl bg-[#76f7b2] px-4 py-2 text-xs font-bold text-[#062115] transition hover:brightness-110">{running ? "Pause training" : metrics.episode > 1 ? "Resume training" : "Start training"}</button>
+            <button onClick={() => setRunning((v) => !v)} className="rounded-xl bg-violet-300 px-4 py-2 text-xs font-bold text-[#171126] transition hover:brightness-110">{running ? "Pause training" : metrics.episode > 1 ? "Resume training" : "Start training"}</button>
             <button onClick={reset} className="rounded-xl border border-white/10 bg-white/[0.025] px-4 py-2 text-xs font-semibold text-[#c6d9cf] transition hover:bg-white/[0.05]">Reset agent</button>
             <div className="ml-auto flex items-center text-[11px] text-[#60796d]">simulation speed <span className="ml-1 font-semibold text-[#8da79a]">{speed}×</span></div>
           </div>
         </div>
 
-        <aside className="rounded-2xl border border-white/10 bg-[#0b1713]/90 p-5">
+        <aside className="rounded-2xl border border-white/10 bg-[#141126]/90 p-5">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[#789285]">Policy telemetry</div>
               <div className="mt-1 text-lg font-semibold">{status}</div>
             </div>
-            <div className="metric-value text-3xl font-semibold text-[#76f7b2]">{Math.round(progress)}%</div>
+            <div className="metric-value text-3xl font-semibold text-violet-300">{Math.round(progress)}%</div>
           </div>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-[#76f7b2] transition-[width] duration-300" style={{ width: `${progress}%` }} /></div>
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-violet-300 transition-[width] duration-300" style={{ width: `${progress}%` }} /></div>
 
           <div className="mt-5 grid grid-cols-2 gap-2">
             <Metric label="Episode" value={metrics.episode.toLocaleString()} />

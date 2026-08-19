@@ -12,13 +12,13 @@ type AgentCardProps = {
   description: string;
   skill: number;
   seed: number;
-  accent: "rose" | "amber" | "green";
+  accent: "rose" | "amber" | "violet";
 };
 
 const accents = {
   rose: "text-rose-300 bg-rose-400/10 border-rose-300/15",
   amber: "text-amber-300 bg-amber-400/10 border-amber-300/15",
-  green: "text-[#76f7b2] bg-emerald-400/10 border-emerald-300/15",
+  violet: "text-violet-300 bg-violet-400/10 border-violet-300/15",
 };
 
 const emptyMetrics: PongMetrics = {
@@ -29,7 +29,7 @@ const emptyMetrics: PongMetrics = {
 export default function AgentCard({ name, training, model, description, skill, seed, accent }: AgentCardProps) {
   const [metrics, setMetrics] = useState(emptyMetrics);
   return (
-    <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#0b1713]/90 shadow-2xl shadow-black/15">
+    <article className="overflow-hidden rounded-2xl border border-white/10 bg-[#141126]/90 shadow-2xl shadow-black/15">
       <div className="flex items-start justify-between gap-3 p-5 pb-4">
         <div>
           <div className="flex items-center gap-2">
@@ -39,8 +39,8 @@ export default function AgentCard({ name, training, model, description, skill, s
           <h3 className="mt-3 text-lg font-semibold">{name}</h3>
           <p className="mt-1 min-h-10 text-xs leading-5 text-[#8da79a]">{description}</p>
         </div>
-        <div className="flex items-center gap-1.5 rounded-full bg-emerald-400/7 px-2.5 py-1 text-[10px] font-medium text-[#76f7b2]">
-          <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-[#76f7b2]" /> LIVE
+        <div className="flex items-center gap-1.5 rounded-full bg-cyan-400/7 px-2.5 py-1 text-[10px] font-medium text-cyan-200">
+          <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-cyan-300" /> LIVE
         </div>
       </div>
       <div className="border-y border-white/8 bg-black/15 p-2">

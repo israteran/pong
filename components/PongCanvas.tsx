@@ -10,6 +10,8 @@ type PongCanvasProps = {
   learning?: boolean;
   resetToken?: number;
   seed?: number;
+  humanLeft?: boolean;
+  playerDirection?: -1 | 0 | 1;
   onMetrics?: (metrics: PongMetrics) => void;
 };
 
@@ -20,6 +22,8 @@ export default function PongCanvas({
   learning = false,
   resetToken = 0,
   seed = 1,
+  humanLeft = false,
+  playerDirection = 0,
   onMetrics,
 }: PongCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -27,6 +31,7 @@ export default function PongCanvas({
   const onMetricsRef = useRef(onMetrics);
   const runningRef = useRef(running);
   const speedRef = useRef(speed);
+  const playerDirectionRef = useRef(playerDirection);
 
   useEffect(() => {
     onMetricsRef.current = onMetrics;
@@ -41,12 +46,16 @@ export default function PongCanvas({
   }, [speed]);
 
   useEffect(() => {
+    playerDirectionRef.current = playerDirection;
+  }, [playerDirection]);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const engine = new PongEngine({ width: 600, height: 340, skill, learning, seed });
+    const engine = new PongEngine({ width: 600, height: 340, skill, learning, seed, humanLeft });
     engineRef.current = engine;
     let frame = 0;
     let last = performance.now();
@@ -64,10 +73,10 @@ export default function PongCanvas({
 
       ctx.setTransform((displayW / 600) * dpr, 0, 0, (displayH / 340) * dpr, 0, 0);
       ctx.clearRect(0, 0, 600, 340);
-      ctx.fillStyle = "#07100d";
+      ctx.fillStyle = "#0b0a18";
       ctx.fillRect(0, 0, 600, 340);
 
-      ctx.strokeStyle = "rgba(141, 167, 154, 0.2)";
+      ctx.strokeStyle = "rgba(170, 164, 194, 0.2)";
       ctx.lineWidth = 1;
       for (let y = 10; y < 340; y += 18) {
         ctx.beginPath();
@@ -76,7 +85,7 @@ export default function PongCanvas({
         ctx.stroke();
       }
 
-      ctx.strokeStyle = "rgba(118, 247, 178, 0.08)";
+      ctx.strokeStyle = "rgba(167, 139, 250, 0.1)";
       for (let x = 0; x <= 600; x += 50) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 340); ctx.stroke();
       }
@@ -84,20 +93,20 @@ export default function PongCanvas({
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(600, y); ctx.stroke();
       }
 
-      ctx.fillStyle = "rgba(238, 251, 244, .88)";
+      ctx.fillStyle = "rgba(245, 242, 255, .88)";
       ctx.fillRect(22, engine.leftY, engine.paddleW, engine.paddleH);
 
-      ctx.shadowColor = "rgba(118, 247, 178, .65)";
+      ctx.shadowColor = "rgba(167, 139, 250, .65)";
       ctx.shadowBlur = 12;
-      ctx.fillStyle = "#76f7b2";
+      ctx.fillStyle = "#a78bfa";
       ctx.fillRect(600 - 22 - engine.paddleW, engine.rightY, engine.paddleW, engine.paddleH);
       ctx.shadowBlur = 0;
 
-      ctx.shadowColor = "rgba(238, 251, 244, .7)";
+      ctx.shadowColor = "rgba(245, 242, 255, .7)";
       ctx.shadowBlur = 10;
       ctx.beginPath();
       ctx.arc(engine.ball.x, engine.ball.y, engine.ball.r, 0, Math.PI * 2);
-      ctx.fillStyle = "#eefbf4";
+      ctx.fillStyle = "#f5f2ff";
       ctx.fill();
       ctx.shadowBlur = 0;
     };
@@ -106,6 +115,7 @@ export default function PongCanvas({
       const elapsed = Math.min(0.05, (now - last) / 1000);
       last = now;
       if (runningRef.current) {
+        engine.setPlayerDirection(playerDirectionRef.current);
         const simulated = elapsed * speedRef.current;
         const step = 1 / 120;
         const iterations = Math.max(1, Math.ceil(simulated / step));
@@ -122,7 +132,7 @@ export default function PongCanvas({
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [skill, learning, seed, resetToken]);
+  }, [skill, learning, seed, resetToken, humanLeft]);
 
   return <canvas ref={canvasRef} className="block aspect-[30/17] w-full rounded-xl" aria-label="Pong reinforcement learning simulation" />;
 }
