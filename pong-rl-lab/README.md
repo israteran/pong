@@ -5,6 +5,7 @@ A browser-based MVP that uses Pong to visualize how a reinforcement-learning-sty
 ## What is included
 
 - Three simultaneous Pong simulations representing low, medium, and high training maturity.
+- An Atari-style gallery for Breakout, Space Invaders, and Seaquest, showing how those same three policy sizes change behavior by task.
 - Live score, rally, win-rate, and reward metrics for every agent.
 - Interactive training mode with Start, Pause, Reset, and 1x / 5x / 10x simulation speeds.
 - Dynamic episode, cumulative reward, average reward, win/loss, rally, and policy-quality telemetry.

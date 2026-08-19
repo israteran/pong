@@ -7,8 +7,8 @@
   --line: rgba(148, 163, 184, 0.14);
   --text: #fff7ed;
   --muted: #c4b4a5;
-  --accent: #fb923c;
-  --accent-2: #ea580c;
+  --accent: #ff7a18;
+  --accent-2: #f04f00;
   --amber: #fbbf24;
   --red: #fb7185;
 }
@@ -19,8 +19,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 15% -10%, rgba(234, 88, 12, 0.18), transparent 28%),
-    radial-gradient(circle at 85% 0%, rgba(251, 146, 60, 0.09), transparent 24%),
+    radial-gradient(circle at 15% -10%, rgba(255, 91, 0, 0.25), transparent 30%),
+    radial-gradient(circle at 85% 0%, rgba(255, 153, 51, 0.12), transparent 26%),
     var(--bg);
   color: var(--text);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -28,6 +28,8 @@ body {
 
 button { font: inherit; }
 a:focus-visible, button:focus-visible { outline: 2px solid #fb923c; outline-offset: 3px; }
+
+::selection { background: rgba(255, 122, 24, .32); color: #fff7ed; }
 
 .grid-noise {
   background-image:

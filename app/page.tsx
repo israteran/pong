@@ -3,6 +3,7 @@ import LearningCurve from "@/components/LearningCurve";
 import TrainingLab from "@/components/TrainingLab";
 import RLExplainer from "@/components/RLExplainer";
 import PlayAgainstAgent from "@/components/PlayAgainstAgent";
+import EnvironmentGallery from "@/components/EnvironmentGallery";
 
 const agents = [
   {
@@ -13,6 +14,7 @@ const agents = [
     skill: 0.28,
     seed: 1042,
     accent: "rose" as const,
+    rank: 1,
   },
   {
     name: "Developing Policy",
@@ -22,6 +24,7 @@ const agents = [
     skill: 0.61,
     seed: 2307,
     accent: "amber" as const,
+    rank: 2,
   },
   {
     name: "Mature Agent",
@@ -31,6 +34,7 @@ const agents = [
     skill: 0.92,
     seed: 7109,
     accent: "orange" as const,
+    rank: 3,
   },
 ];
 
@@ -49,7 +53,7 @@ export default function Home() {
           <nav className="flex items-center gap-2 text-xs">
             <a href="#compare" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white sm:block">Compare</a>
             <a href="#rl-basics" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white md:block">What is RL?</a>
-            <a href="#play" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white lg:block">Play</a>
+            <a href="#environments" className="hidden rounded-lg px-3 py-2 text-[#c4b4a5] hover:bg-white/5 hover:text-white lg:block">Games</a>
             <a href="#training" className="rounded-lg border border-orange-300/20 bg-orange-400/10 px-3 py-2 font-semibold text-orange-200">Training Lab</a>
           </nav>
         </div>
@@ -64,11 +68,11 @@ export default function Home() {
             <h1 className="mt-6 max-w-4xl text-4xl font-semibold tracking-[-0.045em] text-[#fff7ed] sm:text-5xl lg:text-7xl">
               Visualize learning<br/><span className="text-orange-300">one rally at a time.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#c4b4a5] sm:text-base">Compare three Pong agents at different training levels, then train a compact DQN and watch its behavior evolve in real time.</p>
+            <p className="mt-6 max-w-2xl text-sm leading-7 text-[#c4b4a5] sm:text-base">Compare small, medium, and large policies in Pong, then carry the same RL ideas into three Atari-style environments.</p>
           </div>
           <div className="grid grid-cols-3 gap-2 lg:max-w-xl lg:justify-self-end">
             {[
-              ["03", "agents compared"],
+              ["04", "games in the lab"],
               ["10×", "max sim speed"],
               ["100%", "browser based"],
             ].map(([value, label]) => (
@@ -86,7 +90,7 @@ export default function Home() {
               <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">Policy comparison</div>
               <h2 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">Same game. Different training maturity.</h2>
             </div>
-            <p className="max-w-xl text-xs leading-5 text-[#a48d7d]">The right paddle is the learning agent. The opponent uses the same fixed baseline policy in every panel, making behavior differences easier to observe.</p>
+            <p className="max-w-xl text-xs leading-5 text-[#a48d7d]">The right paddle is the learning agent. Track the live rallies, then compare reaction time, prediction confidence, and exploration below each simulation.</p>
           </div>
 
           <div className="grid gap-4 lg:grid-cols-3">
@@ -103,28 +107,7 @@ export default function Home() {
         <TrainingLab />
         <PlayAgainstAgent />
 
-        <section className="mt-20 rounded-2xl border border-white/10 bg-[#1b120d]/75 p-6 md:p-8">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-orange-300">Future environments</div>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight">Atari games to expand the lab</h2>
-            </div>
-            <p className="max-w-xl text-xs leading-5 text-[#c4b4a5]">Suggested scope only; these environments are not implemented yet. Each is available as an ALE reference environment.</p>
-          </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ["Breakout", "An ideal next step: one paddle, continuous control, and clear rewards."],
-              ["Space Invaders", "Introduces moving targets, projectiles, and faster decisions."],
-              ["Seaquest", "Adds planning, limited resources, and longer-term rewards."],
-              ["Montezuma’s Revenge", "An advanced exploration challenge with sparse rewards."],
-            ].map(([game, description]) => (
-              <article key={game} className="rounded-xl border border-white/8 bg-black/15 p-4">
-                <h3 className="text-sm font-semibold text-orange-200">{game}</h3>
-                <p className="mt-2 text-[11px] leading-5 text-[#c4b4a5]">{description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+        <EnvironmentGallery />
 
         <section className="mt-20 rounded-2xl border border-white/10 bg-[#1b120d]/75 p-6 md:p-8">
           <div className="grid gap-8 lg:grid-cols-3">
