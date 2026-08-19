@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import PongCanvas from "./PongCanvas";
 import BreakoutCanvas from "./BreakoutCanvas";
 import Metric from "./Metric";
@@ -32,10 +32,10 @@ const emptyMetrics: PongMetrics = {
 export default function AgentCard({ name, training, model, description, skill, seed, accent, rank, game = "pong" }: AgentCardProps) {
   const [metrics, setMetrics] = useState(emptyMetrics);
   const profile = skill < 0.4
-    ? { reaction: "210 ms", prediction: 31, exploration: 78, label: "Alta variación" }
+    ? { reaction: "210 ms", prediction: 31, exploration: 78, label: "High variance" }
     : skill < 0.8
-      ? { reaction: "110 ms", prediction: 65, exploration: 40, label: "Ganando consistencia" }
-      : { reaction: "45 ms", prediction: 93, exploration: 8, label: "Política precisa" };
+      ? { reaction: "110 ms", prediction: 65, exploration: 40, label: "Building consistency" }
+      : { reaction: "45 ms", prediction: 93, exploration: 8, label: "Precise policy" };
   const featured = skill > 0.8;
 
   return (
@@ -51,9 +51,9 @@ export default function AgentCard({ name, training, model, description, skill, s
           <p className="mt-1 min-h-10 text-xs leading-5 text-[#b7a08d]">{description}</p>
         </div>
         <div className="text-right">
-          <div className="text-[10px] font-bold tracking-[0.16em] text-[#8e786a]">MODELO 0{rank}</div>
+          <div className="text-[10px] font-bold tracking-[0.16em] text-[#8e786a]">MODEL 0{rank}</div>
           <div className="mt-2 flex items-center justify-end gap-1.5 rounded-full bg-orange-400/7 px-2.5 py-1 text-[10px] font-medium text-orange-200">
-            <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-orange-300" /> EN VIVO
+            <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-orange-300" /> LIVE
           </div>
         </div>
       </div>
@@ -62,24 +62,24 @@ export default function AgentCard({ name, training, model, description, skill, s
       </div>
       <div className="border-b border-white/8 px-4 py-3">
         <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-[0.14em] text-[#8e786a]">
-          <span>Perfil de comportamiento</span><span className="text-orange-200">{profile.label}</span>
+          <span>Behavior profile</span><span className="text-orange-200">{profile.label}</span>
         </div>
         <div className="grid grid-cols-3 gap-3">
-          <div><div className="text-[10px] text-[#8e786a]">Reacción</div><div className="mt-0.5 text-xs font-semibold text-[#fff0e6]">{profile.reaction}</div></div>
-          <div><div className="text-[10px] text-[#8e786a]">Predicción</div><div className="mt-0.5 text-xs font-semibold text-[#fff0e6]">{profile.prediction}%</div></div>
-          <div><div className="text-[10px] text-[#8e786a]">Exploración</div><div className="mt-0.5 text-xs font-semibold text-[#fff0e6]">{profile.exploration}%</div></div>
+          <div><div className="text-[10px] text-[#8e786a]">Reaction</div><div className="mt-0.5 text-xs font-semibold text-[#fff0e6]">{profile.reaction}</div></div>
+          <div><div className="text-[10px] text-[#8e786a]">Prediction</div><div className="mt-0.5 text-xs font-semibold text-[#fff0e6]">{profile.prediction}%</div></div>
+          <div><div className="text-[10px] text-[#8e786a]">Exploration</div><div className="mt-0.5 text-xs font-semibold text-[#fff0e6]">{profile.exploration}%</div></div>
         </div>
         <div className="mt-2.5 flex gap-1" aria-label={`${name} behavior profile`}>
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-orange-300" style={{ width: `${100 - profile.exploration}%` }} /></div>
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-orange-400" style={{ width: `${profile.prediction}%` }} /></div>
-          <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/5"><div className="h-full rounded-full bg-orange-500" style={{ width: `${100 - (Number.parseInt(profile.reaction, 10) / 2.4)}%` }} /></div>
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/5"><div className="model-meter h-full rounded-full bg-orange-300" style={{ "--meter-width": `${100 - profile.exploration}%`, "--meter-delay": `${rank * 110}ms` } as CSSProperties} /></div>
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/5"><div className="model-meter h-full rounded-full bg-orange-400" style={{ "--meter-width": `${profile.prediction}%`, "--meter-delay": `${rank * 110 + 120}ms` } as CSSProperties} /></div>
+          <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/5"><div className="model-meter h-full rounded-full bg-orange-500" style={{ "--meter-width": `${100 - (Number.parseInt(profile.reaction, 10) / 2.4)}%`, "--meter-delay": `${rank * 110 + 240}ms` } as CSSProperties} /></div>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2 p-4 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-        <Metric label={game === "breakout" ? "Bloques" : "Marcador"} value={`${metrics.agentScore}–${metrics.opponentScore}`} hint={game === "breakout" ? "puntos / restantes" : "agente / rival"} />
-        <Metric label={game === "breakout" ? "Impactos" : "Intercambio"} value={metrics.rally} hint={`mejor ${metrics.longestRally}`} />
-        <Metric label="Victorias" value={`${metrics.winRate.toFixed(0)}%`} hint="partida actual" />
-        <Metric label="Recompensa" value={metrics.averageReward.toFixed(1)} hint="promedio / episodio" />
+        <Metric label={game === "breakout" ? "Bricks" : "Score"} value={`${metrics.agentScore}–${metrics.opponentScore}`} hint={game === "breakout" ? "points / remaining" : "agent / opponent"} />
+        <Metric label={game === "breakout" ? "Hits" : "Rally"} value={metrics.rally} hint={`best ${metrics.longestRally}`} />
+        <Metric label="Wins" value={`${metrics.winRate.toFixed(0)}%`} hint="current run" />
+        <Metric label="Reward" value={metrics.averageReward.toFixed(1)} hint="average / episode" />
       </div>
     </article>
   );

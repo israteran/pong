@@ -15,6 +15,19 @@ type PongCanvasProps = {
   onMetrics?: (metrics: PongMetrics) => void;
 };
 
+type TrailPoint = { x: number; y: number };
+
+function predictedIntercept(ball: { x: number; y: number; vx: number; vy: number; r: number }, targetX: number, height: number) {
+  if (ball.vx <= 0) return null;
+  const travelTime = (targetX - ball.x) / ball.vx;
+  if (travelTime <= 0) return null;
+  const top = ball.r;
+  const bottom = height - ball.r;
+  let y = ball.y + ball.vy * travelTime;
+  while (y < top || y > bottom) y = y < top ? top + (top - y) : bottom - (y - bottom);
+  return y;
+}
+
 export default function PongCanvas({
   skill,
   running = true,
@@ -60,6 +73,8 @@ export default function PongCanvas({
     let frame = 0;
     let last = performance.now();
     let lastMetricUpdate = 0;
+    let ballTrail: TrailPoint[] = [];
+    let paddleTrail: number[] = [];
 
     const draw = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -93,15 +108,56 @@ export default function PongCanvas({
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(600, y); ctx.stroke();
       }
 
+      const agentColor = skill < 0.4 ? "#fb7185" : skill < 0.8 ? "#fbbf24" : "#fb923c";
+      const prediction = predictedIntercept(engine.ball, 600 - 22 - engine.paddleW, 340);
+      const uncertainty = 10 + (1 - skill) * 62;
+      const confidence = Math.round((0.16 + skill * 0.84) * 100);
+
+      if (prediction !== null) {
+        const targetX = 600 - 22 - engine.paddleW;
+        const visualPrediction = engine.ball.y * (1 - skill) + prediction * skill;
+        ctx.fillStyle = `${agentColor}18`;
+        ctx.fillRect(targetX - 7, visualPrediction - uncertainty, 24, uncertainty * 2);
+        ctx.setLineDash(skill < 0.45 ? [4, 8] : [7, 5]);
+        ctx.strokeStyle = `${agentColor}${skill < 0.45 ? "70" : "b8"}`;
+        ctx.lineWidth = skill < 0.45 ? 1 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(engine.ball.x, engine.ball.y);
+        ctx.lineTo(targetX + 3, visualPrediction);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = agentColor;
+        ctx.globalAlpha = 0.32 + skill * 0.5;
+        ctx.fillRect(targetX - 4, visualPrediction - 2, 18, 4);
+        ctx.globalAlpha = 1;
+      }
+
+      paddleTrail.forEach((y, index) => {
+        const age = (index + 1) / paddleTrail.length;
+        ctx.fillStyle = agentColor;
+        ctx.globalAlpha = age * (0.05 + (1 - skill) * 0.17);
+        ctx.fillRect(600 - 22 - engine.paddleW - 5 * age, y, engine.paddleW, engine.paddleH);
+      });
+      ctx.globalAlpha = 1;
+
       ctx.fillStyle = "rgba(255, 247, 237, .88)";
       ctx.fillRect(22, engine.leftY, engine.paddleW, engine.paddleH);
 
-      ctx.shadowColor = "rgba(251, 146, 60, .65)";
-      ctx.shadowBlur = 12;
-      ctx.fillStyle = "#fb923c";
+      ctx.shadowColor = agentColor;
+      ctx.shadowBlur = 9 + skill * 10;
+      ctx.fillStyle = agentColor;
       ctx.fillRect(600 - 22 - engine.paddleW, engine.rightY, engine.paddleW, engine.paddleH);
       ctx.shadowBlur = 0;
 
+      ballTrail.forEach((point, index) => {
+        const age = (index + 1) / ballTrail.length;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, engine.ball.r * (0.24 + age * 0.46), 0, Math.PI * 2);
+        ctx.fillStyle = "#fff7ed";
+        ctx.globalAlpha = age * 0.42;
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
       ctx.shadowColor = "rgba(255, 247, 237, .7)";
       ctx.shadowBlur = 10;
       ctx.beginPath();
@@ -109,6 +165,13 @@ export default function PongCanvas({
       ctx.fillStyle = "#fff7ed";
       ctx.fill();
       ctx.shadowBlur = 0;
+
+      ctx.fillStyle = "rgba(255,247,237,.62)";
+      ctx.font = "600 10px Inter, system-ui, sans-serif";
+      ctx.fillText("PREDICTION", 18, 22);
+      ctx.fillStyle = agentColor;
+      ctx.font = "700 12px Inter, system-ui, sans-serif";
+      ctx.fillText(`${confidence}% CONFIDENCE`, 18, 38);
     };
 
     const tick = (now: number) => {
@@ -122,6 +185,10 @@ export default function PongCanvas({
         const subDt = simulated / iterations;
         for (let i = 0; i < iterations; i += 1) engine.step(subDt);
       }
+      ballTrail.push({ x: engine.ball.x, y: engine.ball.y });
+      ballTrail = ballTrail.slice(-Math.round(5 + skill * 16));
+      paddleTrail.push(engine.rightY);
+      paddleTrail = paddleTrail.slice(-7);
       draw();
       if (now - lastMetricUpdate > 140) {
         lastMetricUpdate = now;

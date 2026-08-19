@@ -31,7 +31,16 @@ export default function LearningCurve() {
             return <g key={v}><line x1={pad} x2={width-pad} y1={y} y2={y} stroke="rgba(196,180,165,.10)"/><text x="4" y={y+4} fill="#8e786a" fontSize="11">{v}</text></g>;
           })}
           <defs><filter id="curve-glow" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="2" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter></defs>
-          {series.map((item) => <path key={item.label} d={toPath(item.points)} fill="none" stroke={item.color} strokeWidth={item.width} strokeLinecap="round" strokeDasharray={item.dash} filter={item.label.startsWith("Large") ? "url(#curve-glow)" : undefined} />)}
+          {series.map((item, index) => {
+            const last = item.points[item.points.length - 1];
+            const x = width - pad;
+            const y = height - pad - (last / 100) * (height - pad * 2);
+            return <g key={item.label}>
+              <path d={toPath(item.points)} fill="none" stroke={item.color} strokeWidth={item.width} strokeLinecap="round" strokeDasharray={item.dash} filter={item.label.startsWith("Large") ? "url(#curve-glow)" : undefined} />
+              <circle className="curve-endpoint" cx={x} cy={y} r={item.label.startsWith("Large") ? 5 : 4} fill={item.color} style={{ animationDelay: `${index * 320}ms` }} />
+              <text x={x - 5} y={y - 11} textAnchor="end" fill={item.color} fontSize="11" fontWeight="700">{last}%</text>
+            </g>;
+          })}
           <text x={width/2-38} y={height-4} fill="#8e786a" fontSize="11">training episodes →</text>
           <text transform={`translate(11 ${height/2+32}) rotate(-90)`} fill="#8e786a" fontSize="11">policy quality</text>
         </svg>
